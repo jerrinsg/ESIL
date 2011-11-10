@@ -115,7 +115,6 @@ TypeDef:	TYPEDEF ID '{' TypeDefList '}'			{
 									typelast = NULL;
 									typedefsize = 0;
 								}
-
 		;
 
 TypeDefList:	
@@ -135,13 +134,11 @@ TypeDefIdType:	INTEGER						{	DataType = INT_VARTYPE;			}
 										if(gtemp->TYPE != TYPEDEF_VARTYPE) {
 											yyerror("\nERR: Invalid Datatype for typedef declaration\n");
 										}
-									
 									}
 									
 									else  {
 									
 										yyerror("\nERR: Invalid Datatype for typedef declaration\n");
-									
 									}
 									
 									if(gtemp->GTypeDefType!=NULL)
@@ -173,7 +170,6 @@ TypeDefId:	ID						{
 									
 										typelast->NEXT = typetemp;
 										typelast = typetemp;
-									
 									}
 									
 									else  {
@@ -217,7 +213,6 @@ GDefblock:	DECL GDefList ENDDECL				{
 									   regcount = 0;
 									   fprintf(fp,"JMP MAIN\n");
 									   fclose(fp);
-
 								}
 		;
 
@@ -293,7 +288,6 @@ GId:		ID '[' CONST ']'   				{
 									Ginstall($1->NAME,DataType,1, 0, NULL, NULL, gTypedef);		
 									
 								}
-		
 		;
 
 ArgList :							{ 	}
@@ -361,7 +355,6 @@ Fdef : 		RType ID '(' FArgDef ')' '{' LDefblock Body '}'	{
 										fprintf(fp,"PUSH R%d\n",regcount);
 									
 									}
-									
 									
 									fclose(fp);
 									
@@ -497,7 +490,7 @@ LId:		ID						{  	gsymbol *gtemp = NULL;
 											yyerror("\nERR : You cannot reuse typedef variable name\n");
 									
 									}
-									
+									//printf("\ncalling Linstall 12");
 									Linstall($1->NAME,datatype, gTypedef);			
 								}
 		;
@@ -583,8 +576,6 @@ TypedefVar:	ID DOT Variable					{
 								  		
 								  		}
 								  		$1->Lentry = ltemp;
-								  		
-								  	
 								  	}
 								  			
 									$1->Ptr4 = $3;
@@ -646,8 +637,6 @@ TypedefVar:	ID DOT Variable					{
 								  			}
 								  		}
 								  		else  {
-								  		
-								  		// IF TYPE IS TYPEDEF ??!!
 								  		
 								  		}
 								 	 }	
@@ -773,8 +762,6 @@ expr:	 	NOT expr					{
 									gsymbol *gtemp;
 									gtemp = Glookup($1->NAME);
 									
-									
-									
 									if(!gtemp || gtemp->SIZE !=0)
 										yyerror("\nERR: Function not declared\n");
 									
@@ -818,7 +805,6 @@ expr:	 	NOT expr					{
 									  				if($3->Gentry->TYPE==BOOL_VARTYPE)
 									  					yyerror("\nERR: invalid array index\n");
 									  				
-								  		
 									  			}
 								  		
 									  			else  {
@@ -837,7 +823,6 @@ expr:	 	NOT expr					{
 								  			}
 								  		}
 								  		else  {
-								  		
 								  		
 								  		
 								  		}
@@ -1052,9 +1037,9 @@ Stmt:		READ '(' ID '[' expr ']' ')'			{
 								
 		|WHILE '(' expr ')' DO StmtList ENDWHILE	{	
 									checktype($3,$1,NULL);
-									  $1->Ptr1=$3;
-									  $1->Ptr2=$6;
-									  $$=$1;
+									$1->Ptr1=$3;
+									$1->Ptr2=$6;
+									$$=$1;
 								}
 								
 		|TypedefVar '=' expr				{	//printf("\nCALLING CHECKTYPE\n");
@@ -1119,9 +1104,6 @@ Stmt:		READ '(' ID '[' expr ']' ')'			{
 								  	if(!ltemp)  {
 								  		gtemp = Glookup($1->NAME) ;
 								  		
-								  		if((gtemp->TYPE = TYPEDEF_VARTYPE)&&(gtemp->TYPEDEFLIST != NULL))
-								  				yyerror("\nERR: Referring a typedef variable\n");
-								  		
 								  		if(gtemp)  {
 								  			$1->Gentry = gtemp;
 								  			if((gtemp->SIZE)>1)  {
@@ -1130,9 +1112,12 @@ Stmt:		READ '(' ID '[' expr ']' ')'			{
 								  		
 								  		}
 								  		else  {
-								  			printf("\nERR: You have not declared %s ",$1->NAME);
+								  			printf("\nERR: You have not declared %s\n ",$1->NAME);
 								  			yyerror("\n");
 								  		}
+								  		
+								  		if((gtemp->TYPE = TYPEDEF_VARTYPE)&&(gtemp->TYPEDEFLIST != NULL))
+								  				yyerror("\nERR: Referring a typedef variable\n");
 								  	}
 								  	else  {
 								  		$1->Lentry = ltemp;
@@ -1218,7 +1203,7 @@ tdatatype * getTypeDefDataType(tnode *ttemp)  {
 			*(tdata->BINDING) = bind;
 		}
 		
-		printf("\nReturning following info for %s \n TYPE : %d \n SIZE : %d\n BINDING : %d\n", ttemp->NAME, tdata->TYPE, tdata->SIZE, *(tdata->BINDING));
+		//printf("\nReturning following info for %s \n TYPE : %d \n SIZE : %d\n BINDING : %d\n", ttemp->NAME, tdata->TYPE, tdata->SIZE, *(tdata->BINDING));
 		
 		return(tdata);
 	}
@@ -1231,7 +1216,6 @@ tdatatype * getTypeDefDataType(tnode *ttemp)  {
 		if(lookahead)  {
 			flag = 0;
 			while(typedeflist)  {
-				
 				
 				if(typedeflist->TYPE != TYPEDEF_VARTYPE )  {
 						if((strcmp(typedeflist->NAME, lookahead->NAME)==0)&&(lookahead->Ptr4 == NULL))  {
@@ -1265,7 +1249,7 @@ tdatatype * getTypeDefDataType(tnode *ttemp)  {
 					//printf("\nRETURNUNG %d ", tdata->TYPE);
 					//if(tdata->GTypeDefType)
 						//printf("\nRETURNUNG %s ", tdata->GTypeDefType->NAME);
-						printf("\nReturning following info for %s \n TYPE : %d \n SIZE : %d\n BINDING : %d\n", lookahead->NAME, tdata->TYPE, tdata->SIZE, *(tdata->BINDING));
+						//printf("\nReturning following info for %s \n TYPE : %d \n SIZE : %d\n BINDING : %d\n", lookahead->NAME, tdata->TYPE, tdata->SIZE, *(tdata->BINDING));
 					return(tdata);
 					
 				}
@@ -1292,7 +1276,6 @@ tdatatype * getTypeDefDataType(tnode *ttemp)  {
 				}
 			}
 		
-			
 			if(typedeflist->GTypeDefPtr)
 				gtypedeftype = typedeflist->GTypeDefPtr;
 			if(gtypedeftype->TYPEDEFLIST)
@@ -1402,7 +1385,7 @@ void InstallArg( argstruct *arg)  {
 	int n=0,size;
 	
 	if(Datatype == TYPEDEF_VARTYPE)
-		size = (-3 - (gtypedef->SIZE));
+		size = (-3 - (gtypedef->SIZE) + 1);
 	else
 		size = -3;
 	
@@ -1425,6 +1408,7 @@ void InstallArg( argstruct *arg)  {
 	while(arg)  {
 	
 		mem_count = size - n + 1;
+		//printf("\ncalling Linstall 1 with type %d", arg->TYPE);
 		Linstall(arg->NAME, arg->TYPE, arg->GTypeDefType);
 		
 		if(arg->TYPE == TYPEDEF_VARTYPE)
@@ -1432,14 +1416,11 @@ void InstallArg( argstruct *arg)  {
 		else
 			n=n-1;
 		
-		
 		arg=arg->NEXT;
 	}
 	
 	mem_count = 1;
-
 }
-
 
 void Arginstall(char *name, int type,int passtype, gsymbol *Gtypedef)  {
 	
@@ -1543,7 +1524,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 								  if(t1->TYPE==VOID_TYPE)  {
 								  	if(t1->Lentry!=NULL)  {
 								  		if(t1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  			printf("\ncalling getTypeDefDataType 1\n");
+								  			//printf("\ncalling getTypeDefDataType 1\n");
 											typedefdatatype = getTypeDefDataType(t1);
 											if(typedefdatatype->TYPE != INT_VARTYPE)
 												flag=0;
@@ -1556,7 +1537,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 									else  {
 										if(t1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		
-								  			printf("\ncalling getTypeDefDataType 2\n");
+								  			//printf("\ncalling getTypeDefDataType 2\n");
 								  			typedefdatatype = getTypeDefDataType(t1);
 											if(typedefdatatype->TYPE != INT_VARTYPE)
 												flag=0;
@@ -1574,7 +1555,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 									  	
 									if(t3->Lentry)  {
 										if(t3->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-											printf("\ncalling getTypeDefDataType 3\n");
+											//printf("\ncalling getTypeDefDataType 3\n");
 											typedefdatatype = getTypeDefDataType(t3);
 											if(typedefdatatype->TYPE != INT_VARTYPE)
 												flag=0;
@@ -1589,7 +1570,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 									else  {
 										if(t3->Gentry->TYPE == TYPEDEF_VARTYPE)  {
 								  			
-								  			printf("\ncalling getTypeDefDataType 4\n");typedefdatatype = getTypeDefDataType(t3);
+								  			//printf("\ncalling getTypeDefDataType 4\n");
+								  			typedefdatatype = getTypeDefDataType(t3);
 											if(typedefdatatype->TYPE != INT_VARTYPE)
 												flag=0;
 								  		
@@ -1612,7 +1594,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 								  
 								  if(type==TYPEDEF_VARTYPE)  {
 								  	//printf("\nTYPEDEF MATCHED\n");
-								  printf("\ncalling getTypeDefDataType 5\n");	typedefdatatype = getTypeDefDataType(t1);
+								  //printf("\ncalling getTypeDefDataType 5\n");	
+								  typedefdatatype = getTypeDefDataType(t1);
 								  	
 								  	if(typedefdatatype->TYPE == INT_VARTYPE)  {
 								  	
@@ -1624,7 +1607,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 								  		
 								  				if(t3->Lentry->TYPE == TYPEDEF_VARTYPE)  {
 								  					//printf("\nsencond match\n");
-												printf("\ncalling getTypeDefDataType 6\n");	typedefdatatype = getTypeDefDataType(t3);
+												//printf("\ncalling getTypeDefDataType 6\n");	
+												typedefdatatype = getTypeDefDataType(t3);
 													if(typedefdatatype->TYPE != INT_VARTYPE)
 														flag=0;
 													
@@ -1637,7 +1621,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 								  			else  {
 								  				if(t3->Gentry->TYPE == TYPEDEF_VARTYPE)  {
 								  			
-	printf("\ncalling getTypeDefDataType 7\n");							  					typedefdatatype = getTypeDefDataType(t3);
+													//printf("\ncalling getTypeDefDataType 7\n");
+													typedefdatatype = getTypeDefDataType(t3);
 													if(typedefdatatype->TYPE != INT_VARTYPE)
 														flag=0;
 								  				}
@@ -1661,7 +1646,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 										
 												if(t3->Lentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		
-												printf("\ncalling getTypeDefDataType a\n");typedefdatatype = getTypeDefDataType(t3);
+												//printf("\ncalling getTypeDefDataType a\n");
+												typedefdatatype = getTypeDefDataType(t3);
 												if(typedefdatatype->TYPE != BOOL_VARTYPE)
 													flag=0;
 									  			}
@@ -1674,7 +1660,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 											else  {
 												if(t3->Gentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		
-									  			printf("\ncalling getTypeDefDataType b\n");	typedefdatatype = getTypeDefDataType(t3);
+									  			//printf("\ncalling getTypeDefDataType b\n");	
+									  			typedefdatatype = getTypeDefDataType(t3);
 													if(typedefdatatype->TYPE != BOOL_VARTYPE)
 														flag=0;
 									  			}
@@ -1703,7 +1690,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 									  			}
 									  			else  {
 									  			
-									  		printf("\ncalling getTypeDefDataType c\n");		typedefdatatype_2 = getTypeDefDataType(t3);
+									  		//printf("\ncalling getTypeDefDataType c\n");		
+									  		typedefdatatype_2 = getTypeDefDataType(t3);
 									  		   if(typedefdatatype->GTypeDefType != typedefdatatype_2->GTypeDefType)  {
 									  		   	
 									  		      		flag=0;	
@@ -1722,7 +1710,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 									  			
 									  			else  {
 									  			
-									  		printf("\ncalling getTypeDefDataType d\n");		typedefdatatype_2 = getTypeDefDataType(t3);
+									  		//printf("\ncalling getTypeDefDataType d\n");		
+									  		typedefdatatype_2 = getTypeDefDataType(t3);
 									  		   if(typedefdatatype->GTypeDefType != typedefdatatype_2->GTypeDefType)  {
 									  		   	
 									  		      		flag=0;	
@@ -1746,7 +1735,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 								  		
 								  			if(t3->Lentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		
-										printf("\ncalling getTypeDefDataType e\n");		typedefdatatype = getTypeDefDataType(t3);
+										//printf("\ncalling getTypeDefDataType e\n");		
+										typedefdatatype = getTypeDefDataType(t3);
 												if(typedefdatatype->TYPE != INT_VARTYPE)
 													flag=0;
 								  			}
@@ -1758,7 +1748,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 								  		else  {
 								  			if(t3->Gentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		
-								  		printf("\ncalling getTypeDefDataType f\n");		typedefdatatype = getTypeDefDataType(t3);
+								  		//printf("\ncalling getTypeDefDataType f\n");		
+								  		typedefdatatype = getTypeDefDataType(t3);
 												if(typedefdatatype->TYPE != INT_VARTYPE)
 													flag=0;
 								  			}
@@ -1780,7 +1771,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 										
 											if(t3->Lentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		
-									printf("\ncalling getTypeDefDataType g\n");			typedefdatatype = getTypeDefDataType(t3);
+									//printf("\ncalling getTypeDefDataType g\n");			
+									typedefdatatype = getTypeDefDataType(t3);
 												if(typedefdatatype->TYPE != BOOL_VARTYPE)
 													flag=0;
 								  			}
@@ -1793,7 +1785,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 										else  {
 											if(t3->Gentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		
-								  	printf("\ncalling getTypeDefDataType g\n");			typedefdatatype = getTypeDefDataType(t3);
+								  	//printf("\ncalling getTypeDefDataType g\n");			
+								  	typedefdatatype = getTypeDefDataType(t3);
 												if(typedefdatatype->TYPE != BOOL_VARTYPE)
 													flag=0;
 								  			}
@@ -1830,7 +1823,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     		if(t1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		
 										//printf("\n1CALLING CHECKTYPE\n");
-									printf("\ncalling getTypeDefDataType i\n");	typedefdatatype = getTypeDefDataType(t1);
+									//printf("\ncalling getTypeDefDataType i\n");	
+									typedefdatatype = getTypeDefDataType(t1);
 										if(typedefdatatype->TYPE != INT_VARTYPE)
 											flag=0;
 								  	}
@@ -1843,7 +1837,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     		if(t1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		
 							  			//printf("\n2CALLING CHECKTYPE\n");
-							  		printf("\ncalling getTypeDefDataType j\n");	typedefdatatype = getTypeDefDataType(t1);
+							  		//printf("\ncalling getTypeDefDataType j\n");	
+							  		typedefdatatype = getTypeDefDataType(t1);
 										if(typedefdatatype->TYPE != INT_VARTYPE)
 											flag=0;
 							  		}
@@ -1861,7 +1856,8 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     		
 							     		if(t3->Lentry->TYPE == TYPEDEF_VARTYPE)  {
 								  		//printf("\n3CALLING CHECKTYPE\n");
-									printf("\ncalling getTypeDefDataType k\n");	typedefdatatype = getTypeDefDataType(t3);
+									//printf("\ncalling getTypeDefDataType k\n");	
+									typedefdatatype = getTypeDefDataType(t3);
 										if(typedefdatatype->TYPE != INT_VARTYPE)
 											flag=0;
 								  	}
@@ -1897,7 +1893,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     	if(t1->Lentry)  {
 							     		
 							     		if(t1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType l\n");
+								  		//printf("\ncalling getTypeDefDataType l\n");
 										typedefdatatype = getTypeDefDataType(t1);
 										if(typedefdatatype->TYPE != BOOL_VARTYPE)
 											flag=0;
@@ -1908,7 +1904,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     	}
 							     	else  {
 							     		if(t1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType m\n");
+								  		//printf("\ncalling getTypeDefDataType m\n");
 							  			typedefdatatype = getTypeDefDataType(t1);
 										if(typedefdatatype->TYPE != BOOL_VARTYPE)
 											flag=0;
@@ -1925,7 +1921,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     		
 							     	if(t3->Lentry)  {
 								     	if(t3->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType n\n");
+								  		//printf("\ncalling getTypeDefDataType n\n");
 										typedefdatatype = getTypeDefDataType(t3);
 										if(typedefdatatype->TYPE != BOOL_VARTYPE)
 											flag=0;
@@ -1936,7 +1932,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     	}
 							     	else  {
 							     		if(t3->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  			printf("\ncalling getTypeDefDataType o\n");
+								  			//printf("\ncalling getTypeDefDataType o\n");
 								  		typedefdatatype = getTypeDefDataType(t3);
 										if(typedefdatatype->TYPE != BOOL_VARTYPE)
 										flag=0;
@@ -1962,7 +1958,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 		     								if(t1->Lentry)  {
 		     								
 		     									if(t1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType p\n");
+								  		//printf("\ncalling getTypeDefDataType p\n");
 												typedefdatatype = getTypeDefDataType(t1);
 												if(typedefdatatype->TYPE != BOOL_VARTYPE)
 												flag=0;
@@ -1974,7 +1970,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 		     								
 		     								else if(t1->Gentry)  {
 		     									if(t1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType q\n");
+								  		//printf("\ncalling getTypeDefDataType q\n");
 							  					typedefdatatype = getTypeDefDataType(t1);
 												if(typedefdatatype->TYPE != BOOL_VARTYPE)
 													flag=0;
@@ -2034,7 +2030,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 													if(ptr1->Lentry)  {
 													
 														if(ptr1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType r	\n");
+								  							//printf("\ncalling getTypeDefDataType r	\n");
 														       typedefdatatype = getTypeDefDataType(ptr1);
 															if(typedefdatatype->TYPE != INT_VARTYPE)
 																flag=0;
@@ -2049,7 +2045,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 													else if(ptr1->Gentry)  {
 														
 														if(ptr1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType s\n");
+								  							//printf("\ncalling getTypeDefDataType s\n");
 							  							       typedefdatatype = getTypeDefDataType(ptr1);
 															if(typedefdatatype->TYPE != INT_VARTYPE)
 																flag=0;
@@ -2081,7 +2077,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 													if(ptr1->Lentry)  {
 													
 														if(ptr1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType t\n");
+								  							//printf("\ncalling getTypeDefDataType t\n");
 														       typedefdatatype = getTypeDefDataType(ptr1);
 															if(typedefdatatype->TYPE != BOOL_VARTYPE)
 																flag=0;
@@ -2096,7 +2092,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 													else if(ptr1->Gentry)  {
 													
 														if(ptr1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType u\n");
+								  							//printf("\ncalling getTypeDefDataType u\n");
 							  							       typedefdatatype = getTypeDefDataType(ptr1);
 															if(typedefdatatype->TYPE != BOOL_VARTYPE)
 																flag=0;
@@ -2129,7 +2125,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 												if(ptr1->Lentry)  {
 												
 													if(ptr1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType v\n");
+								  						//printf("\ncalling getTypeDefDataType v\n");
 														typedefdatatype = getTypeDefDataType(ptr1);
 														if(typedefdatatype->TYPE != TYPEDEF_VARTYPE)
 															flag=0;
@@ -2145,7 +2141,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 												else if(ptr1->Gentry)  {
 												
 													if(ptr1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType w\n");
+								  						//printf("\ncalling getTypeDefDataType w\n");
 														typedefdatatype = getTypeDefDataType(ptr1);
 														if(typedefdatatype->TYPE != TYPEDEF_VARTYPE)
 															flag=0;
@@ -2182,7 +2178,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     		flag=0;
 							     	if(t1->Lentry)  {
 							     		if(t1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType x\n");
+								  		//printf("\ncalling getTypeDefDataType x\n");
 										typedefdatatype = getTypeDefDataType(t1);
 										if(typedefdatatype->TYPE != BOOL_VARTYPE)
 											flag=0;
@@ -2194,7 +2190,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     	
 							     	else {
 							     		if(t1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType y\n");
+								  		//printf("\ncalling getTypeDefDataType y\n");
 							  			typedefdatatype = getTypeDefDataType(t1);
 										if(typedefdatatype->TYPE != BOOL_VARTYPE)
 											flag=0;
@@ -2213,7 +2209,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     		flag=0;
 							     	if(t1->Lentry)  {
 							     		if(t1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType z\n");
+								  		//printf("\ncalling getTypeDefDataType z\n");
 										typedefdatatype = getTypeDefDataType(t1);
 										if(typedefdatatype->TYPE != BOOL_VARTYPE)
 											flag=0;
@@ -2225,7 +2221,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 							     	else {
 							     	
 							     		if(t1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType 1a\n");
+								  		//printf("\ncalling getTypeDefDataType 1a\n");
 							  			typedefdatatype = getTypeDefDataType(t1);
 										if(typedefdatatype->TYPE != BOOL_VARTYPE)
 											flag=0;
@@ -2250,7 +2246,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 				  						if(t1->Lentry)  {
 				  						
 				  							if(t1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType 1b\n");
+								  				//printf("\ncalling getTypeDefDataType 1b\n");
 												typedefdatatype = getTypeDefDataType(t1);
 												if(typedefdatatype->TYPE != INT_VARTYPE)
 													flag=0;
@@ -2262,7 +2258,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 				  						}
 				  						else {
 				  							if(t1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType 1c\n");
+								  				//printf("\ncalling getTypeDefDataType 1c\n");
 							  					typedefdatatype = getTypeDefDataType(t1);
 												if(typedefdatatype->TYPE != INT_VARTYPE)
 													flag=0;
@@ -2289,7 +2285,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 				  							if(t1->Lentry)  {
 					  							
 					  							if(t1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-								  		printf("\ncalling getTypeDefDataType 1d\n");
+								  					//printf("\ncalling getTypeDefDataType 1d\n");
 													typedefdatatype = getTypeDefDataType(t1);
 													if(typedefdatatype->TYPE != BOOL_VARTYPE)
 														flag=0;
@@ -2302,7 +2298,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 				  							}
 				  							else {
 				  								if(t1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-								  			printf("\ncalling getTypeDefDataType 1e\n");
+								  				//printf("\ncalling getTypeDefDataType 1e\n");
 							  					typedefdatatype = getTypeDefDataType(t1);
 												if(typedefdatatype->TYPE != BOOL_VARTYPE)
 													flag=0;
@@ -2325,7 +2321,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 													flag=0;	
 					  						
 					  							else if(t1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-					  						printf("\ncalling getTypeDefDataType 1f\n");
+					  								//printf("\ncalling getTypeDefDataType 1f\n");
 					  								typedefdatatype = getTypeDefDataType(t1);
 					  								if(gtypedef != typedefdatatype->GTypeDefType)
 					  									flag=0;
@@ -2339,7 +2335,7 @@ void checktype(tnode *t1,tnode *t2,tnode *t3) {
 													flag=0;	
 													
 					  							else if(t1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-					  						printf("\ncalling getTypeDefDataType 1g\n");
+					  								//printf("\ncalling getTypeDefDataType 1g\n");
 					  								typedefdatatype = getTypeDefDataType(t1);
 					  								if(gtypedef != typedefdatatype->GTypeDefType)
 					  									flag=0;
@@ -2381,7 +2377,7 @@ void Linstall(char *name,int type, gsymbol *gtypedeftype)  {
 		
 		printf("\nInstalling %s at binding %d\n", name, mem_count);
 		
-		if(type = TYPEDEF_VARTYPE)  {
+		if(type == TYPEDEF_VARTYPE)  {
 		
 			mem_count = mem_count + gtypedeftype->SIZE;
 		
@@ -2406,6 +2402,7 @@ int traverse(tnode *temp)  {
 	int temp_label;
 	tdatatype *typedefdatatype;
 	int reg_count;
+	gsymbol *gtemp = NULL;
 	int i,count = 0;
 	FILE *fp;
 	
@@ -2428,7 +2425,7 @@ int traverse(tnode *temp)  {
 								
 								if(temp->Ptr1->Gentry)  {
 									if(temp->Ptr1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-									printf("\ncalling getTypeDefDataType 1h\n");
+										//printf("\ncalling getTypeDefDataType 1h\n");
 										typedefdatatype = getTypeDefDataType(temp->Ptr1);
 										fprintf(fp, "MOV R%d, %d\n", regcount, *(typedefdatatype->BINDING));
 										regcount++;
@@ -2464,7 +2461,7 @@ int traverse(tnode *temp)  {
 									regcount++;
 									
 									if(temp->Ptr1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-									printf("\ncalling getTypeDefDataType 1i\n");
+										//printf("\ncalling getTypeDefDataType 1i\n");
 										typedefdatatype = getTypeDefDataType(temp->Ptr1);
 										fprintf(fp, "MOV R%d, %d\n", regcount, *(typedefdatatype->BINDING));
 										regcount++;
@@ -2503,13 +2500,14 @@ int traverse(tnode *temp)  {
 								break;
 										
 					case ID_NODETYPE:	
-								//printf("\nID CALLED");
+								
 								count = 0;
 								if(temp->Gentry)  {
-									
-									if(temp->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-										
-										fp = fopen("sim.asm","a");printf("\ncalling getTypeDefDataType 1j\n");
+									printf("\nID %s with size %d CALLED", temp->NAME, temp->Gentry->SIZE);
+									if(temp->Gentry->TYPE == TYPEDEF_VARTYPE && temp->Gentry->SIZE != 0)  {
+										printf("\nhere 127\n");
+										fp = fopen("sim.asm","a");
+										//printf("\ncalling getTypeDefDataType 1j\n");
 										typedefdatatype = getTypeDefDataType(temp);
 										
 										if(typedefdatatype->TYPE == TYPEDEF_VARTYPE)  {
@@ -2535,7 +2533,7 @@ int traverse(tnode *temp)  {
 									}
 									
 									else if((temp->Gentry->SIZE)>1)  {
-									
+										printf("\nhere 312\n");
 										fp = fopen("sim.asm","a");
 										count++;
 										fprintf(fp,"MOV R%d, %d\n",regcount, *(temp->Gentry->BINDING));
@@ -2561,7 +2559,7 @@ int traverse(tnode *temp)  {
 									}
 									
 									else if((temp->Gentry->SIZE)==0)  {
-										
+										printf("\nhere 123\n");
 										reg_count = regcount;
 										
 										int i;
@@ -2575,7 +2573,7 @@ int traverse(tnode *temp)  {
 										regcount = 0;
 										tnode *argtemp = temp->ArgList;
 										while(argtemp)  {
-										
+											printf("\nhere 4\n");
 											traverse(argtemp);
 											fp = fopen("sim.asm","a");
 											if((argtemp->TYPE == VOID_TYPE) && (argtemp->NODETYPE == ID_NODETYPE))  {
@@ -2584,7 +2582,7 @@ int traverse(tnode *temp)  {
 												if(argtemp->Gentry)  {
 												
 													if(argtemp->Gentry->TYPE == TYPEDEF_VARTYPE)  {
-													printf("\ncalling getTypeDefDataType 1k\n");
+													//printf("\ncalling getTypeDefDataType 1k\n");
 														typedefdatatype = getTypeDefDataType(argtemp);
 														if(typedefdatatype->TYPE == TYPEDEF_VARTYPE)  {
 														
@@ -2611,7 +2609,7 @@ int traverse(tnode *temp)  {
 												else if(argtemp->Lentry)  {
 												
 													if(argtemp->Lentry->TYPE == TYPEDEF_VARTYPE)  {
-													printf("\ncalling getTypeDefDataType 1l\n");	
+													//printf("\ncalling getTypeDefDataType 1l\n");	
 														typedefdatatype = getTypeDefDataType(argtemp);
 														if(typedefdatatype->TYPE == TYPEDEF_VARTYPE)  {
 														
@@ -2651,9 +2649,45 @@ int traverse(tnode *temp)  {
 											
 											argtemp = argtemp->Ptr3;
 										}
-										
+										printf("\nhere 1\n");
+										count = 0;
 										fp = fopen("sim.asm","a");
-										fprintf(fp,"PUSH R%d\n",regcount);  
+										/* PUSHING RETURN VALUE */
+										if(temp->Gentry)  {
+										
+											if(temp->Gentry->TYPE == TYPEDEF_VARTYPE)  {
+											
+												for(i=0;i<(temp->Gentry->GTypeDefType->SIZE);i++)  {
+													count++;
+													fprintf(fp,"PUSH R%d\n",regcount);
+												}
+											}
+											
+											else {
+												count++;
+												fprintf(fp,"PUSH R%d\n",regcount);
+											}
+										}
+										
+										else if(temp->Lentry)  {
+										
+											if(temp->Lentry->TYPE == TYPEDEF_VARTYPE)  {
+											
+												for(i=0;i<(temp->Lentry->GTypeDefType->SIZE);i++)  {
+													count++;
+													fprintf(fp,"PUSH R%d\n",regcount);
+												}
+											}
+											
+											else {
+												count++;
+												fprintf(fp,"PUSH R%d\n",regcount);
+											
+											}
+										
+										}
+										/* PUSHING RETURN VALUE */
+										printf("\nhere 12\n");
 										fprintf(fp,"CALL f%d\n",*(temp->Gentry->BINDING));
 										fclose(fp);
 										
@@ -2664,8 +2698,14 @@ int traverse(tnode *temp)  {
 										*/
 										regcount = reg_count;
 										fp = fopen("sim.asm","a");
-										fprintf(fp,"POP R%d\n", regcount);
-										regcount++;
+										
+										for(i=0;i<count;i++)  {
+										
+											fprintf(fp,"POP R%d\n", regcount+count-1-i);
+										
+										}
+										
+										regcount = regcount+count;
 										fclose(fp);
 										
 										argtemp = temp->ArgList;
@@ -2674,37 +2714,89 @@ int traverse(tnode *temp)  {
 										
 										while(argstructtemp && argtemp)  {
 											fp = fopen("sim.asm","a");
-											fprintf(fp,"POP R%d\n",regcount);
-											regcount++;
+											count = 0;
+											if(argstructtemp->TYPE == TYPEDEF_VARTYPE)  {
+											
+												for(i=0;i<(argstructtemp->GTypeDefType->SIZE);i++)  {
+													
+													count++;
+													fprintf(fp,"POP R%d\n",regcount +(argstructtemp->GTypeDefType->SIZE)-i-1 );
+													regcount++;	
+												}
+											
+											}
+											
+											else  {
+												count++;
+												fprintf(fp,"POP R%d\n",regcount);
+												regcount++;
+											}
+											
 											
 											if(argstructtemp->PASSTYPE == PASSBYREF)  {
 												
 												
 												if(argtemp->Lentry)  {
+												
+													if(argtemp->Lentry->TYPE == TYPEDEF_VARTYPE)  {
+													
+														for(i=0;i<count;i++)  {
+														
+															fprintf(fp,"MOV R%d, %d\n", regcount, *(argtemp->Lentry->BINDING)+i);
+															regcount++;
+														}
+													
+													}
+													
+													else  {
+														
+														fprintf(fp,"MOV R%d, %d\n", regcount, *(argtemp->Lentry->BINDING));
+														regcount++;
+													
+													}
+												
 													fprintf(fp,"MOV R%d, BP\n", regcount);
 													regcount++;
-											fprintf(fp,"MOV R%d, %d\n", regcount, *(argtemp->Lentry->BINDING));
 													
-													regcount++;
+													for(i=0;i<count;i++)  {
 													
-													fprintf(fp,"ADD R%d, R%d\n", regcount-2, regcount-1);
+														fprintf(fp, "ADD R%d, R%d\n", regcount-count+i-1, regcount-1); 
+													}
 													regcount--;
 													
 												}
 												
 												else  {
+													if(argtemp->Gentry->TYPE == TYPEDEF_VARTYPE)  {
+													
+														for(i=0;i<count;i++)  {
+														
+															fprintf(fp,"MOV R%d, %d\n", regcount, *(argtemp->Gentry->BINDING)+i);
+															regcount++;
+														}
+													
+													}
+													
+													else  {
+													
+														fprintf(fp,"MOV R%d, %d\n", regcount, *(argtemp->Gentry->BINDING));
+														regcount++;
+													
+													}
+												}
 												
-												fprintf(fp,"MOV R%d, %d", regcount, *(argtemp->Gentry->BINDING));
-													regcount++;
+												for(i=0;i<count;i++)  {
+												
+													fprintf(fp,"MOV [R%d], R%d\n", regcount-count+i, regcount-(2*count)+i);
+												
 												
 												}
 												
-												fprintf(fp,"MOV [R%d], R%d\n", regcount-1, regcount-2);
-												regcount--;
+												regcount=regcount-count;
 											
 											}
 											
-											regcount--;
+											regcount=regcount-count;
 											
 											argtemp = argtemp->Ptr3;
 											argstructtemp = argstructtemp->NEXT;
@@ -2729,7 +2821,8 @@ int traverse(tnode *temp)  {
 									
 									if(temp->Lentry->TYPE == TYPEDEF_VARTYPE)  {
 									
-										fp = fopen("sim.asm","a");printf("\ncalling getTypeDefDataType 1m\n");
+										fp = fopen("sim.asm","a");
+										//printf("\ncalling getTypeDefDataType 1m\n");
 										typedefdatatype = getTypeDefDataType(temp);
 										
 										if(typedefdatatype->TYPE == TYPEDEF_VARTYPE)  {
@@ -2938,55 +3031,115 @@ int traverse(tnode *temp)  {
 							break;
 				
 				case ASSIGN_NODETYPE:	
-							
+							count = 0;
 							if(temp->Ptr1->Lentry)  {
-							
 								fp = fopen("sim.asm","a");
+								if(temp->Ptr1->Lentry->TYPE == TYPEDEF_VARTYPE)  {
+								
+									typedefdatatype = getTypeDefDataType(temp->Ptr1);
+								
+									if(typedefdatatype->TYPE == TYPEDEF_VARTYPE)  {
+										
+										for(i=0;i<typedefdatatype->SIZE;i++)  {
+											count++;
+											fprintf(fp, "MOV R%d, %d\n", regcount, *(typedefdatatype->BINDING)+i);
+											regcount++;
+											
+										}
+									}
+								
+									else  {
+										count++;
+										fprintf(fp, "MOV R%d, %d\n", regcount, *(typedefdatatype->BINDING));
+										regcount++;
+									}
+								}
+								else  {
+								
+									count++;
+									fprintf(fp,"MOV R%d, %d\n", regcount, *(temp->Ptr1->Lentry->BINDING));
+									regcount++;
+								}
 								
 								fprintf(fp,"MOV R%d, BP\n", regcount);
 								regcount++;
 								
-								fprintf(fp,"MOV R%d, %d\n", regcount, *(temp->Ptr1->Lentry->BINDING));
-								regcount++;
+								for(i=0;i<count;i++)  {
 								
-								fprintf(fp,"ADD R%d, R%d\n", regcount-2, regcount-1);
+									fprintf(fp, "ADD R%d, R%d\n", regcount-2-i, regcount-1);
+								
+								}
 								regcount--;
 								
 								fclose(fp);
-							
 							}
 							
 							else if(temp->Ptr1->Gentry)  {
 							
-								if((temp->Ptr1->Gentry->SIZE)>1)  {
+								if(temp->Ptr1->Gentry->TYPE == TYPEDEF_VARTYPE)  {
+									fp = fopen("sim.asm","a");
 								
-									fp = fopen("sim.asm","a");
-									fprintf(fp,"MOV R%d, %d\n", regcount, *(temp->Ptr1->Gentry->BINDING));
-									regcount++;
+									typedefdatatype = getTypeDefDataType(temp->Ptr1);
+									
+									if(typedefdatatype->TYPE == TYPEDEF_VARTYPE)  {
+									
+										for(i=0;i<typedefdatatype->SIZE;i++)  {
+											count++;
+											fprintf(fp, "MOV R%d, %d\n", regcount, *(typedefdatatype->BINDING)+i);
+											regcount++;
+											
+										}
+									}
+									
+									else  {
+										count++;
+										fprintf(fp, "MOV R%d, %d\n", regcount, *(typedefdatatype->BINDING));
+										regcount++;
+									}
 									fclose(fp);
-									
-									traverse(temp->Ptr1->Ptr1);
-									
-									fp = fopen("sim.asm","a");
-									fprintf(fp,"ADD R%d, R%d\n", regcount-2, regcount-1);
-									regcount--;
-									fclose(fp);
-									
 								}
+								
 								else  {
 								
-									fp = fopen("sim.asm","a");
-									fprintf(fp,"MOV R%d, %d\n", regcount, *(temp->Ptr1->Gentry->BINDING));
-									regcount++;
-									fclose(fp);
+									if((temp->Ptr1->Gentry->SIZE)>1)  {
+										count++;
+										fp = fopen("sim.asm","a");
+										fprintf(fp,"MOV R%d, %d\n", regcount, *(temp->Ptr1->Gentry->BINDING));
+										regcount++;
+										fclose(fp);
+									
+										traverse(temp->Ptr1->Ptr1);
+										
+										fp = fopen("sim.asm","a");
+										fprintf(fp,"ADD R%d, R%d\n", regcount-2, regcount-1);
+										regcount--;
+										fclose(fp);
+										
+									}
+									else  {
+										count++;
+										fp = fopen("sim.asm","a");
+										fprintf(fp,"MOV R%d, %d\n", regcount, *(temp->Ptr1->Gentry->BINDING));
+										regcount++;
+										fclose(fp);
 								
+									}
 								}
+							
 							}
 							
 							traverse(temp->Ptr2);
+							
+							
 							fp = fopen("sim.asm","a");
-							fprintf(fp,"MOV [R%d], R%d\n", regcount-2, regcount-1);
-							regcount = regcount - 2;
+							
+							for(i=0;i<count;i++)  {
+							
+								fprintf(fp, "MOV [R%d], R%d\n", (regcount-(2*count)+i), regcount-count+i);
+							}
+							
+							regcount=regcount-(2*count);
+							
 							fclose(fp);
 							break;
 							
