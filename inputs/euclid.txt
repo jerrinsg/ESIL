@@ -1,0 +1,72 @@
+typedef euclid {
+
+	integer d,alpha, beta;
+}
+
+decl
+	euclid extended(integer a,b);
+enddecl
+
+euclid extended(integer a, b) {
+
+decl
+	euclid var;
+	integer g,h;
+	integer q,r;
+enddecl
+begin
+	if(b==0)
+		then
+		var.d = a;
+		var.alpha= 1;
+		var.beta = 0;
+		
+		else
+		if(a%b == 0) 
+			then
+				var.d = b;
+				var.alpha = 0;
+				var.beta = 1;
+			else
+				q=a/b;
+				r=a%b;
+				var=extended(b,r);
+				g=var.alpha;
+				h=var.beta;
+				var.alpha=h;
+				var.beta = g-h*q;
+			endif;
+		endif;
+	return var;
+end
+}
+
+integer main() {
+
+decl
+	
+	integer a,b;
+	integer temp;
+	euclid element;
+enddecl
+
+begin
+	read(a);
+	read(b);
+	if(a>b)
+	then
+		element = extended(a,b);
+	else
+		element = extended(b,a);
+		temp = element.alpha;
+		element.alpha = element.beta;
+		element.beta = temp;
+		
+	endif;
+	
+	write(element.d);
+	write(element.alpha);
+	write(element.beta);
+	return 1;
+end
+}
