@@ -40,8 +40,8 @@
 #define PASSBYREF		1
 
 struct Lsymbol  {
-	char *NAME;
 	int TYPE;
+	char *NAME;
 	int *BINDING;			// Address of the Identifier in Memory
 	struct Gsymbol *GTypeDefType;
 	struct Lsymbol *NEXT;		// Pointer to next Symbol Table Entry 
@@ -50,29 +50,27 @@ struct Lsymbol  {
 
 struct Tnode {
 	int TYPE; 
-	int NODETYPE;
-	char* NAME; 
 	int VALUE; 
+	char* NAME; 
+	int NODETYPE;
 	struct Tnode *ArgList;
-	struct Tnode *Ptr1, *Ptr2, *Ptr3, *Ptr4;
 	struct Lsymbol *Lentry; 
 	struct Gsymbol *Gentry; 
+	struct Tnode *Ptr1, *Ptr2, *Ptr3, *Ptr4;
 };
 
-struct TDataType  {
-
-// THIS STRUCTURE IS USED TO GET INFO ABOUT DATASTRUCTURE ELEMENTS
-// CONTAINS ITS TYPE AND POINTER TO THE CORRESPONDING GST IF TYPE IS TYPEDEF_VARTYPE
-
-int TYPE;
-struct Gsymbol *GTypeDefType;
-
+struct TDataType  {		// THIS STRUCTURE IS USED TO GET INFO ABOUT DATASTRUCTURE ELEMENTS
+				// CONTAINS ITS TYPE AND POINTER TO THE CORRESPONDING GST IF TYPE IS TYPEDEF_VARTYPE
+	int TYPE;
+	int SIZE;
+	int *BINDING;
+	struct Gsymbol *GTypeDefType;
 };
 
 struct ArgStruct {
 
-	char *NAME;
 	int TYPE;
+	char *NAME;
 	int PASSTYPE;
 	struct ArgStruct *NEXT;
 	struct Gsymbol *GTypeDefType;
@@ -87,22 +85,23 @@ struct FnCheck  {
 
 struct TypeDef  {
 
-	char *NAME;
 	int TYPE;
+	int SIZE;
+	char *NAME;
 	int *BINDING;
-	struct Gsymbol *GTypeDefPtr;
 	struct TypeDef *NEXT;
+	struct Gsymbol *GTypeDefPtr;
 
 };
 
 struct Gsymbol {
 
-char *NAME;
-int TYPE;
-int SIZE;
-int *BINDING; 
-struct TypeDef *TYPEDEFLIST;
-struct ArgStruct *ARGLIST;
-struct Gsymbol *GTypeDefType;
-struct Gsymbol *NEXT;
+	int TYPE;
+	int SIZE;
+	char *NAME;
+	int *BINDING; 
+	struct Gsymbol *NEXT;
+	struct ArgStruct *ARGLIST;
+	struct TypeDef *TYPEDEFLIST;
+	struct Gsymbol *GTypeDefType;
 };

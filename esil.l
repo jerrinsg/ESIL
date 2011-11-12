@@ -37,7 +37,6 @@ tnode *TreeCreate(int, int, char *, int, tnode *, tnode *, tnode *, lsymbol * ,g
 [;}{,)(]		{
 				return *yytext;
 			}
-
 		
 [0-9]+			{	
 				yylval.ptr = TreeCreate(INT_TYPE,NUMBER_NODETYPE,NULL,atoi(yytext),NULL,NULL,NULL,NULL,NULL,NULL, NULL);
@@ -53,7 +52,6 @@ tnode *TreeCreate(int, int, char *, int, tnode *, tnode *, tnode *, lsymbol * ,g
 				yylval.ptr = TreeCreate(VOID_TYPE,WRITE_NODETYPE,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL);
 				return WRITE;
 			}
-
 			
 "if"			{	
 				yylval.ptr = TreeCreate(VOID_TYPE,IF_NODETYPE,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL);
@@ -136,13 +134,10 @@ tnode *TreeCreate(int, int, char *, int, tnode *, tnode *, tnode *, lsymbol * ,g
 				return EQ;
 			}
 
-
 "!"			{
 				yylval.ptr = TreeCreate(BOOLEAN_TYPE,NOT_NODETYPE,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL);
 				return NOT;
 			}
-
-
 
 "!="			{
 				yylval.ptr = TreeCreate(BOOLEAN_TYPE,NE_NODETYPE,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL, NULL);
