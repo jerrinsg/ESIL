@@ -1,0 +1,54 @@
+typedef abc  {
+	integer t;
+}
+
+typedef tux  {
+
+	abc ref;
+
+}
+
+decl
+	abc func(abc yy);
+	integer gg(tux &q);
+enddecl
+
+abc func(abc yy)  {
+
+decl
+
+enddecl
+
+begin
+	yy.t=127;
+	return yy;
+end
+
+}
+
+integer gg(tux &q) {
+
+decl 
+	abc f;
+enddecl
+
+begin
+	f=func(f);
+	q.ref = f;
+	return 1;
+end
+
+}
+
+integer main( ){ 
+decl
+	tux p;
+	integer a;
+enddecl
+
+begin
+	a=gg(p);
+	write(p.ref.t);
+	return 1; 
+end
+}
