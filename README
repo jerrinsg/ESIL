@@ -5,7 +5,7 @@ ESIL is a two-pass compiler for SIM(Simple Integer Machine) machine.
 
 This was done as part of my labortary course work during the academic year 2011-12.
 
-ESIL language description and SIM target machine description can be found in the READ-ME directory.
+ESIL language description and SIM target machine description can be found in the 'DESCRIPTION' directory.
 
 The generated Target Machine Code can be simulated using the simulator provided.
 
